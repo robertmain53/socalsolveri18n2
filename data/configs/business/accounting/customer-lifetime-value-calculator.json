@@ -1,0 +1,251 @@
+{
+  "version": "2.1.0",
+  "metadata": {
+    "title": "Customer Lifetime Value (CLV) Calculator – Predict Long-Term Revenue",
+    "description": "Calculate customer lifetime value using proven formulas. Estimate total revenue per customer with inputs for purchase frequency, order value, margin, retention rate, and discount rate."
+  },
+  "logic": {
+    "type": "formula",
+    "outputs": [
+      {
+        "id": "annual_profit_per_customer",
+        "label": "Annual Profit per Customer",
+        "expression": "avg_order_value * purchase_frequency_annual * (gross_margin_percent / 100)",
+        "format": "currency"
+      },
+      {
+        "id": "simple_clv",
+        "label": "Historic CLV",
+        "expression": "avg_order_value * purchase_frequency_annual * customer_lifespan_years * (gross_margin_percent / 100)",
+        "format": "currency"
+      },
+      {
+        "id": "predictive_clv",
+        "label": "Predictive CLV (NPV-Adjusted)",
+        "expression": "(avg_order_value * purchase_frequency_annual * (gross_margin_percent / 100)) * ((retention_rate_percent / 100) / (1 + (discount_rate_percent / 100) - (retention_rate_percent / 100)))",
+        "format": "currency"
+      },
+      {
+        "id": "clv_minus_cac",
+        "label": "CLV minus CAC",
+        "expression": "((avg_order_value * purchase_frequency_annual * (gross_margin_percent / 100)) * ((retention_rate_percent / 100) / (1 + (discount_rate_percent / 100) - (retention_rate_percent / 100)))) - customer_acquisition_cost",
+        "format": "currency"
+      },
+      {
+        "id": "roi_percent",
+        "label": "Customer ROI",
+        "expression": "customer_acquisition_cost === 0 ? 0 : ((((avg_order_value * purchase_frequency_annual * (gross_margin_percent / 100)) * ((retention_rate_percent / 100) / (1 + (discount_rate_percent / 100) - (retention_rate_percent / 100)))) - customer_acquisition_cost) / customer_acquisition_cost) * 100",
+        "format": "percent"
+      },
+      {
+        "id": "breakeven_purchases",
+        "label": "Purchases to Break Even",
+        "expression": "customer_acquisition_cost / (avg_order_value * (gross_margin_percent / 100))",
+        "format": "decimal"
+      },
+      {
+        "id": "payback_period_years",
+        "label": "CAC Payback Period (years)",
+        "expression": "customer_acquisition_cost / (avg_order_value * purchase_frequency_annual * (gross_margin_percent / 100))",
+        "format": "decimal"
+      }
+    ]
+  },
+  "form": {
+    "fields": [
+      {
+        "id": "avg_order_value",
+        "label": "Average Order Value",
+        "type": "currency",
+        "default": 100,
+        "min": 0.01,
+        "step": 0.01,
+        "required": true,
+        "helpText": "Average revenue per purchase transaction."
+      },
+      {
+        "id": "purchase_frequency_annual",
+        "label": "Purchase Frequency (per year)",
+        "type": "number",
+        "default": 4,
+        "min": 0.01,
+        "step": 0.01,
+        "required": true,
+        "helpText": "How many purchases an average customer makes each year."
+      },
+      {
+        "id": "gross_margin_percent",
+        "label": "Gross Margin",
+        "type": "percent",
+        "default": 40,
+        "min": 0,
+        "max": 100,
+        "step": 0.1,
+        "required": true,
+        "helpText": "Profit margin percentage after cost of goods sold."
+      },
+      {
+        "id": "customer_lifespan_years",
+        "label": "Customer Lifespan (years)",
+        "type": "number",
+        "default": 3,
+        "min": 0.1,
+        "step": 0.1,
+        "required": true,
+        "helpText": "Average number of years a customer remains active."
+      },
+      {
+        "id": "retention_rate_percent",
+        "label": "Retention Rate",
+        "type": "percent",
+        "default": 75,
+        "min": 0,
+        "max": 100,
+        "step": 0.1,
+        "required": true,
+        "helpText": "Percentage of customers who remain after each period."
+      },
+      {
+        "id": "discount_rate_percent",
+        "label": "Discount Rate",
+        "type": "percent",
+        "default": 10,
+        "min": 0,
+        "max": 100,
+        "step": 0.1,
+        "required": true,
+        "helpText": "Annual discount rate for time value of money calculations."
+      },
+      {
+        "id": "customer_acquisition_cost",
+        "label": "Customer Acquisition Cost (CAC)",
+        "type": "currency",
+        "default": 50,
+        "min": 0,
+        "step": 0.01,
+        "required": false,
+        "helpText": "Total cost to acquire one customer."
+      }
+    ],
+    "result": {
+      "outputs": [
+        { "id": "annual_profit_per_customer", "label": "Annual Profit per Customer", "format": "currency" },
+        { "id": "simple_clv", "label": "Historic CLV", "format": "currency" },
+        { "id": "predictive_clv", "label": "Predictive CLV (NPV-Adjusted)", "format": "currency" },
+        { "id": "clv_minus_cac", "label": "CLV minus CAC", "format": "currency" },
+        { "id": "roi_percent", "label": "Customer ROI", "format": "percent" },
+        { "id": "breakeven_purchases", "label": "Purchases to Break Even", "format": "decimal" },
+        { "id": "payback_period_years", "label": "CAC Payback Period (years)", "format": "decimal" }
+      ]
+    }
+  },
+  "page_content": {
+    "introduction": [
+      "Customer Lifetime Value (CLV or LTV) represents the total profit a business can expect from a single customer account throughout the relationship. This calculator helps quantify CLV so you can make smarter decisions about marketing spend, retention programs, and overall growth strategy.",
+      "We combine historic and predictive methodologies. The historic CLV uses observed purchase behavior, while the predictive approach applies net present value adjustments for retention and discount rates to model long-term profitability.",
+      "Understanding CLV allows you to benchmark acquisition efficiency, identify high-value segments, and prioritize initiatives that maximize lifetime revenue."
+    ],
+    "methodology": [
+      "Historic CLV multiplies average order value, purchase frequency, customer lifespan, and gross margin percentage. This baseline model works well for businesses with consistent customer behavior.",
+      "Predictive CLV applies the formula: Annual Profit per Customer × [Retention Rate / (1 + Discount Rate - Retention Rate)]. This net present value approach accounts for churn probability and the time value of money.",
+      "Customer Acquisition Cost (CAC) is subtracted to determine net customer value. Tracking CLV minus CAC and CLV to CAC ratios shows whether acquisition campaigns are profitable and how quickly cash is recovered.",
+      "Payback period estimates the number of years required to recoup CAC using profit contribution. Shorter payback windows reduce cash-flow risk and support faster growth.",
+      "Formulas align with widely adopted guidance from Harvard Business School, McKinsey & Company, and leading customer analytics research."
+    ],
+    "examples": [
+      "SaaS subscription business: $50 monthly billing, 80% gross margin, 85% retention, and $200 CAC yield a predictive CLV over $1,700 with a five-month payback period.",
+      "E-commerce retailer: $85 average order value, six purchases per year, 45% gross margin, 65% retention, and $35 CAC generate a CLV to CAC ratio above 4:1.",
+      "Professional services firm: $5,000 average engagement, two projects per year, 60% margin, 90% retention, and $2,000 CAC deliver exceptional long-term returns despite a longer payback period."
+    ],
+    "faqs": [
+      {
+        "question": "What is the difference between historic CLV and predictive CLV?",
+        "answer": "Historic CLV multiplies average order value, purchase frequency, customer lifespan, and gross margin to provide a baseline estimate. Predictive CLV incorporates retention rates and discount rates, applying net present value principles to produce forward-looking projections."
+      },
+      {
+        "question": "What is a good CLV to CAC ratio?",
+        "answer": "Benchmarks suggest a CLV to CAC ratio of 3:1 or higher indicates healthy unit economics. Ratios below 1:1 signal unprofitable acquisition and require immediate optimization."
+      },
+      {
+        "question": "How should I choose a discount rate?",
+        "answer": "Use your weighted average cost of capital (WACC) or another rate that reflects business risk. Typical discount rates range from 8% to 15% depending on growth stage and alternative investment opportunities."
+      },
+      {
+        "question": "Should I calculate CLV by segment?",
+        "answer": "Yes. Segment-level CLV reveals which channels, demographics, or product categories produce the highest lifetime value. Use those insights to prioritize acquisition and retention investments."
+      },
+      {
+        "question": "How does retention rate affect CLV?",
+        "answer": "Retention has an exponential effect on lifetime value. Even a 5% improvement in retention can increase CLV by 25% or more, making retention optimization one of the highest-leverage growth strategies."
+      },
+      {
+        "question": "What belongs in Customer Acquisition Cost?",
+        "answer": "Include all marketing and sales expenses associated with acquiring a new customer: advertising, sales salaries and commissions, promotional offers, software tools, agency fees, and content production. Exclude post-acquisition servicing costs."
+      }
+    ],
+    "citations": [
+      {
+        "label": "Harvard Business School – Customer Lifetime Value Toolkit",
+        "url": "https://hbsp.harvard.edu/",
+        "summary": "Academic foundation for CLV calculation methodologies."
+      },
+      {
+        "label": "Journal of Marketing – Customer Lifetime Value Research",
+        "url": "https://journals.sagepub.com/home/jmx",
+        "summary": "Peer-reviewed research on retention economics and predictive CLV models."
+      },
+      {
+        "label": "SaaS Capital – SaaS Metrics and Benchmarks",
+        "url": "https://www.saas-capital.com/",
+        "summary": "Industry benchmarks for CLV, CAC, and payback expectations in subscription businesses."
+      },
+      {
+        "label": "McKinsey & Company – Customer Analytics Insights",
+        "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/how-we-help-clients/customer-analytics",
+        "summary": "Strategic frameworks for maximizing lifetime value through data-driven CX."
+      }
+    ],
+    "summary": [
+      "Implements both historic and predictive CLV formulas with net present value adjustments.",
+      "Accounts for retention, discount rate, and acquisition cost to surface actionable unit economics.",
+      "Provides outputs for ROI, break-even purchases, and payback period to guide reinvestment decisions.",
+      "Content and formulas align with leading academic and consulting guidance on customer analytics."
+    ],
+    "glossary": [
+      { "term": "Customer Lifetime Value (CLV)", "definition": "The total net profit attributed to the entire future relationship with a customer." },
+      { "term": "Retention Rate", "definition": "The percentage of customers who remain active from one period to the next." },
+      { "term": "Discount Rate", "definition": "The interest rate used in discounted cash flow analysis to convert future cash flows into present value." },
+      { "term": "Customer Acquisition Cost (CAC)", "definition": "Total sales and marketing expense divided by the number of new customers acquired." },
+      { "term": "Gross Margin", "definition": "Revenue minus cost of goods sold, expressed as a percentage of revenue." },
+      { "term": "Payback Period", "definition": "The time required to recover acquisition cost through profit contributions." }
+    ]
+  },
+  "links": {
+    "internal": [
+      "/business/accounting/customer-acquisition-cost-calculator",
+      "/business/accounting/churn-rate-calculator",
+      "/business/accounting/cohort-retention-calculator",
+      "/business/accounting/return-on-investment-calculator",
+      "/business/accounting/break-even-point-calculator",
+      "/business/accounting/gross-profit-margin-calculator",
+      "/business/accounting/net-present-value-calculator",
+      "/business/accounting/payback-period-calculator",
+      "/finance/loans/roi-calculator"
+    ],
+    "external": [
+      {
+        "url": "https://hbsp.harvard.edu/",
+        "label": "Harvard Business School Publishing",
+        "rel": ["noopener", "noreferrer"]
+      },
+      {
+        "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/how-we-help-clients/customer-analytics",
+        "label": "McKinsey Customer Analytics",
+        "rel": ["noopener", "noreferrer"]
+      }
+    ]
+  },
+  "schema": {
+    "additionalTypes": ["HowTo", "SoftwareApplication"]
+  }
+}

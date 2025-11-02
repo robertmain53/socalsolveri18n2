@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  background-color: #f9fafb;
+}
+
+body {
+  @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+}
+
+a {
+  @apply text-brand-accent transition-colors hover:text-brand;
+}
+
+main {
+  @apply flex-1;
+}

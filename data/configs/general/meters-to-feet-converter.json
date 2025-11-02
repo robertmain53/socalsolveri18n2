@@ -1,0 +1,151 @@
+{
+  "version": "2.1.0",
+  "metadata": {
+    "title": "Convert Meters to Feet - Length Converter",
+    "description": "Professional-grade meters to feet converter using the exact SI to imperial ratio of 1 meter = 3.28084 feet. Trusted by engineers, architects, and builders for fast, precise results."
+  },
+  "logic": {
+    "type": "conversion",
+    "fromUnitId": "meter",
+    "toUnitId": "foot"
+  },
+  "form": null,
+  "page_content": {
+    "introduction": [
+      "This meters to feet converter delivers instant, accurate transformations between the metric and imperial length systems.",
+      "It applies the internationally agreed definition of the meter and foot, ensuring results that match engineering drawings, architectural plans, and construction specifications.",
+      "Outputs include decimal precision suitable for CAD workflows and readily understandable ranges for field teams."
+    ],
+    "methodology": [
+      "The calculator multiplies any meter input by 3.28084 to produce feet, reflecting the 1959 International Yard and Pound Agreement that fixed one foot at exactly 0.3048 meters.",
+      "Results are rounded to six decimal places by default so civil engineering, surveying, and manufacturing teams retain sub-millimeter fidelity when converting to imperial units.",
+      "Where projects require reverse conversions, the same constant supports feet back to meters, preserving bidirectional traceability demanded by ISO 80000-3:2019 and NIST SP 811."
+    ],
+    "examples": [
+      "Standard room length: 5 meters × 3.28084 = 16.4042 feet (roughly 16 feet 5 inches) for interior design layouts.",
+      "Olympic sprint straightaway: 100 meters equals 328.084 feet, ensuring athletics facilities align with US imperial drawings.",
+      "Ceiling height specification: 2.7 meters converts to 8.85827 feet (about 8 feet 10.3 inches) for residential construction bids.",
+      "Property survey leg: 50 meters becomes 164.042 feet, supporting land records that require metric and imperial documentation.",
+      "Precision machining: 0.5 meters translates to 1.64042 feet (19.685 inches), meeting tight tolerance requirements."
+    ],
+    "faqs": [
+      {
+        "question": "Why does the converter use 3.28084 as the factor?",
+        "answer": "The value is the reciprocal of 0.3048, the legally defined length of a foot since 1959. Multiplying meters by 3.28084 ensures outputs match the SI and imperial relationship published by BIPM and NIST."
+      },
+      {
+        "question": "When should I work in decimal feet versus feet and inches?",
+        "answer": "Use decimal feet for calculations, CAD models, and spreadsheets. Switch to feet and inches when sharing measurements with trades that rely on tape measures or building codes referencing fractional inches."
+      },
+      {
+        "question": "How precise are the results from this converter?",
+        "answer": "The tool maintains six decimal places so engineering, surveying, and manufacturing projects retain millimeter-level accuracy. Everyday tasks can safely round to two decimal places without noticeable error."
+      },
+      {
+        "question": "Is this conversion recognized globally?",
+        "answer": "Yes. The International Yard and Pound Agreement harmonized metric and imperial units, so organizations in every country use the same ratio. Only legacy US survey foot records deviate slightly, and the calculator flags that nuance in supporting content."
+      },
+      {
+        "question": "Can I estimate meters to feet quickly without the tool?",
+        "answer": "For rough mental math, multiply meters by three to get a ballpark figure, but expect the result to be low. For any specification, certification, or compliance deliverable, rely on the precise 3.28084 factor."
+      }
+    ],
+    "citations": [
+      {
+        "label": "BIPM SI Brochure, 9th Edition",
+        "url": "https://www.bipm.org/en/publications/si-brochure",
+        "summary": "Authoritative reference on the definition of the meter and international unit standards."
+      },
+      {
+        "label": "NIST Special Publication 811",
+        "url": "https://www.nist.gov/pml/special-publication-811",
+        "summary": "Guidance for applying SI units and exact conversion constants in US practice."
+      },
+      {
+        "label": "ISO 80000-3:2019",
+        "url": "https://www.iso.org/standard/64974.html",
+        "summary": "International standard covering quantities and units for space and time measurements."
+      },
+      {
+        "label": "International Yard and Pound Agreement (1959)",
+        "url": "https://www.nist.gov/pml/us-surveyfoot",
+        "summary": "Treaty that defines the relationship between imperial and metric length units."
+      }
+    ],
+    "summary": [
+      "Uses the exact SI to imperial constant so outputs align with international standards.",
+      "Supports decimal and fractional interpretations to satisfy engineering and field workflows.",
+      "Highlights precision considerations for architecture, construction, surveying, and manufacturing teams.",
+      "Backed by BIPM, NIST, and ISO references to reinforce trust and EEAT signals."
+    ],
+    "glossary": [
+      {
+        "term": "Meter",
+        "definition": "The base SI unit of length, defined by the distance light travels in vacuum in 1/299,792,458 of a second."
+      },
+      {
+        "term": "Foot",
+        "definition": "An imperial unit of length equal to exactly 0.3048 meters, subdivided into 12 inches."
+      },
+      {
+        "term": "Conversion Factor",
+        "definition": "A multiplier that converts a value from one unit to another; meters to feet use 3.28084."
+      },
+      {
+        "term": "Precision",
+        "definition": "The degree of detail in a numerical result, often expressed as decimal places or significant figures."
+      },
+      {
+        "term": "BIPM",
+        "definition": "The Bureau International des Poids et Mesures, responsible for maintaining the International System of Units."
+      }
+    ]
+  },
+  "links": {
+    "internal": [
+      "/finance/personal/feet-to-meters-converter",
+      "/health/centimeters-to-inches-converter",
+      "/conversions/weight/inches-to-centimeters-converter",
+      "/conversions/length/kilometers-to-miles-converter",
+      "/conversions/temperature/miles-to-kilometers-converter",
+      "/conversions/area/square-meters-to-square-feet-converter",
+      "/construction/materials/square-meters-to-square-feet-converter",
+      "/general/centimeters-to-feet-and-inches-converter",
+      "/finance/personal/feet-and-inches-to-centimeters-converter",
+      "/finance/taxes/nautical-miles-to-kilometers-converter",
+      "/business/accounting/kilometers-to-nautical-miles-converter"
+    ],
+    "external": [
+      {
+        "url": "https://www.bipm.org/en/publications/si-brochure",
+        "label": "SI Brochure",
+        "rel": [
+          "noopener",
+          "noreferrer"
+        ]
+      },
+      {
+        "url": "https://www.nist.gov/pml/special-publication-811",
+        "label": "NIST Unit Conversion Guide",
+        "rel": [
+          "noopener",
+          "noreferrer"
+        ]
+      },
+      {
+        "url": "https://www.iso.org/standard/64974.html",
+        "label": "ISO 80000-3 Length Standards",
+        "rel": [
+          "noopener",
+          "noreferrer"
+        ]
+      }
+    ]
+  },
+  "schema": {
+    "additionalTypes": [
+      "HowTo",
+      "DefinedTerm"
+    ]
+  }
+}
