@@ -14,19 +14,19 @@ export default function sitemap({ params }: { params: { locale: string } }): Met
     {
       url: `${base}/${locale}`,
       lastModified: now,
-      changeFrequency: "weekly",
+      changeFrequency: "weekly" as const,
       priority: 0.7,
     },
     {
       url: `${base}/${locale}/calculators`,
       lastModified: now,
-      changeFrequency: "daily",
+      changeFrequency: "daily" as const,
       priority: 0.8,
     },
     ...items.map((it) => ({
       url: `${base}/${locale}/calculators/${it.slug}`,
       lastModified: now,
-      changeFrequency: "monthly",
+      changeFrequency: "monthly" as const,
       priority: 0.9,
     })),
   ];
