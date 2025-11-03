@@ -26,7 +26,7 @@ export type SlugRecord = z.infer<typeof SlugSchema>;
 const ScheduleSchema = z.object({
   date: z.string().min(1),
   calcId: z.string().min(1),
-  published: z.string().transform((v) => /^true$/i.test(v)),
+  published: z.string().transform((v) => /^true$/i.test(v))
 });
 export type ScheduleRecord = z.infer<typeof ScheduleSchema>;
 
@@ -64,14 +64,42 @@ export function readSchedule(locale: Locale): ScheduleRecord[] {
   return parsed;
 }
 
-export function resolveCalcIdToSlug(locale: Locale, calcId: string): string | null {
-  const s = readSlugs(locale).find((x) => x.calcId === calcId);
-  return s?.slug ?? null;
+export interface PublishedEntry {
+  calcId: string;
+  slug: string;
+  title: string;
+  category: string;
+  categorySlug: string;
+  subCategory: string;
+  path: string;
 }
 
-export function resolveSlugToCalcId(locale: Locale, slug: string): string | null {
-  const s = readSlugs(locale).find((x) => x.slug === slug);
-  return s?.calcId ?? null;
+export function resolveCalcIdToSlug(locale: Locale, calcId: string): string | null {
+  const entry = publishedEntries(locale).find((it) => it.calcId === calcId);
+  return entry?.slug ?? null;
+}
+
+export function resolveRouteToCalcId(
+  locale: Locale,
+  categorySlug: string,
+  slug: string
+): string | null {
+  const normalizedCategory = categorySlug.trim().toLowerCase();
+  const normalizedSlug = slug.trim().toLowerCase();
+  if (!normalizedSlug) return null;
+
+  const entries = publishedEntries(locale);
+  const exact = entries.find(
+    (entry) =>
+      entry.slug.toLowerCase() === normalizedSlug &&
+      entry.categorySlug.toLowerCase() === normalizedCategory
+  );
+  if (exact) {
+    return exact.calcId;
+  }
+
+  const fallback = entries.find((entry) => entry.slug.toLowerCase() === normalizedSlug);
+  return fallback?.calcId ?? null;
 }
 
 export function getTitle(locale: Locale, calcId: string): string | null {
@@ -86,17 +114,18 @@ export function publishedCalcIds(locale: Locale): string[] {
 }
 
 export function publishedSlugs(locale: Locale): string[] {
-  const ids = new Set(publishedCalcIds(locale));
-  return readSlugs(locale)
-    .filter((s) => ids.has(s.calcId))
-    .map((s) => s.slug);
+  return publishedEntries(locale).map((entry) => entry.slug);
 }
 
-export function getAllStaticParams(): { locale: Locale; slug: string }[] {
-  const params: { locale: Locale; slug: string }[] = [];
+export function getAllStaticParams(): { locale: Locale; category: string; slug: string }[] {
+  const params: { locale: Locale; category: string; slug: string }[] = [];
   for (const locale of LOCALES) {
-    for (const slug of publishedSlugs(locale)) {
-      params.push({ locale, slug });
+    for (const entry of publishedEntries(locale)) {
+      params.push({
+        locale,
+        category: entry.categorySlug,
+        slug: entry.slug
+      });
     }
   }
   return params;
@@ -107,9 +136,9 @@ export function hreflangAlternates(calcId: string) {
   for (const locale of LOCALES) {
     const isPublished = publishedCalcIds(locale).includes(calcId);
     if (!isPublished) continue;
-    const slug = resolveCalcIdToSlug(locale, calcId);
-    if (!slug) continue;
-    alt[locale] = `/${locale}/calculators/${slug}`;
+    const entry = publishedEntries(locale).find((it) => it.calcId === calcId);
+    if (!entry) continue;
+    alt[locale] = entry.path;
   }
   return alt;
 }
@@ -125,30 +154,34 @@ export function getCalculatorById(calcId: string): Calculator | null {
 }
 
 /** Published entries enriched for a locale */
-export function publishedEntries(locale: Locale): Array<{
-  calcId: string;
-  slug: string;
-  title: string;
-  category: string;
-  subCategory: string;
-}> {
+export function publishedEntries(locale: Locale): PublishedEntry[] {
   const ids = new Set(publishedCalcIds(locale));
   const slugs = readSlugs(locale);
   const calculators = readCalculators();
-  const out: Array<{calcId:string;slug:string;title:string;category:string;subCategory:string;}> = [];
+  const out: PublishedEntry[] = [];
+  const calculatorMap = new Map(calculators.map((c) => [c.calcId, c] as const));
+
   for (const s of slugs) {
     if (!ids.has(s.calcId)) continue;
-    const meta = calculators.find(c => c.calcId === s.calcId);
+    const meta = calculatorMap.get(s.calcId);
+    const category = meta?.category?.trim() ?? "";
+    const categorySlug = category ? toSlug(category) : "general";
+    const subCategory = meta?.subCategory?.trim() ?? "";
     out.push({
       calcId: s.calcId,
       slug: s.slug,
       title: s.title ?? s.calcId,
-      category: meta?.category ?? "",
-      subCategory: meta?.subCategory ?? ""
+      category,
+      categorySlug,
+      subCategory,
+      path: `/${locale}/${categorySlug}/${s.slug}`
     });
   }
   // Sort by category then title
-  out.sort((a,b)=> a.category.localeCompare(b.category) || a.title.localeCompare(b.title));
+  out.sort(
+    (a, b) =>
+      a.category.localeCompare(b.category) || a.title.localeCompare(b.title)
+  );
   return out;
 }
 
@@ -157,8 +190,17 @@ export function getRelatedCalculators(locale: Locale, calcId: string, limit = 6)
   const meta = getCalculatorById(calcId);
   if (!meta) return [];
   const entries = publishedEntries(locale);
-  const sameBucket = entries.filter(e => e.calcId !== calcId && e.category === meta.category && e.subCategory === meta.subCategory);
+  const sameBucket = entries.filter(
+    (e) =>
+      e.calcId !== calcId &&
+      e.category === meta.category &&
+      e.subCategory === meta.subCategory
+  );
   // Fallback: if empty, relax to same category
-  const pool = sameBucket.length ? sameBucket : entries.filter(e => e.calcId !== calcId && e.category === meta.category);
+  const pool = sameBucket.length
+    ? sameBucket
+    : entries.filter(
+        (e) => e.calcId !== calcId && e.category === meta.category
+      );
   return pool.slice(0, limit);
 }
